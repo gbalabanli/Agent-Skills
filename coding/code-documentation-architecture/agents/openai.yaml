@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Documentation Architect"
-  short_description: "Create architecture-focused code documentation packs."
-  default_prompt: "Analyze this repository and produce project_structure.md, code_summary.md, architecture.md, and tasks.md with phased tasks and subtasks."

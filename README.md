@@ -35,6 +35,10 @@ Agent-Skills/
 - `game-dev`: Skills for gameplay systems, engines, assets, tooling, and game production workflows.
 - `productivity`: Skills for task management, documentation workflows, planning, and personal or team efficiency.
 
+## Current Skills
+
+- `productivity/phase-planning`: Create `docs/master_plan.md` and linked `docs/phases/phase-XX-<slug>.md` files, then keep the master plan synchronized when phase docs change.
+
 ## Adding a New Skill
 
 1. Choose the most appropriate category at the repository root.
