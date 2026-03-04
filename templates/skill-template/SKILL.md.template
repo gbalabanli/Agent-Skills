@@ -1,0 +1,35 @@
+---
+name: your-skill-name
+description: Clear capability summary. Use when Codex must perform this workflow, including specific triggers and contexts.
+---
+
+# Your Skill Name
+
+Use imperative instructions. Keep this file concise and move heavy details into `references/`.
+
+## Workflow
+
+1. Clarify objective, constraints, and expected outputs.
+2. Gather only the required context from the repository and user input.
+3. Execute the core workflow steps for this skill.
+4. Validate outputs with checks, tests, or consistency rules.
+5. Report outcomes, assumptions, and any follow-up actions.
+
+## Output Rules
+
+- Produce concrete outputs tied to the user request.
+- Prefer deterministic scripts in `scripts/` for repetitive or fragile operations.
+- Keep assumptions explicit when requirements are ambiguous.
+- Do not add unrelated files or documentation.
+
+## Resource Usage
+
+- Use `scripts/` for executable utilities.
+- Use `references/` for contextual docs loaded only when needed.
+- Use `assets/` for templates or files used in generated output.
+
+## Validation
+
+1. Check frontmatter fields are present (`name`, `description`).
+2. Confirm folder names and file names are lowercase and consistent.
+3. Run relevant project checks before finishing.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Your Skill Name"
+  short_description: "One-line summary of the workflow."
+  default_prompt: "Run this skill workflow for the current request and produce the expected outputs."

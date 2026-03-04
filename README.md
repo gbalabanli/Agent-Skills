@@ -46,6 +46,15 @@ Agent-Skills/
 3. Add a `SKILL.md` file that explains the skill's purpose, workflow, and usage rules.
 4. Add supporting files only when needed, such as scripts, templates, reference docs, or assets.
 
+## Skill Starter Template
+
+A reusable scaffold is available at `templates/skill-template/`.
+
+1. Copy `templates/skill-template/` into the target category and rename the folder to your new skill name.
+2. Rename `SKILL.md.template` to `SKILL.md`.
+3. Rename `agents/openai.yaml.template` to `agents/openai.yaml`.
+4. Replace placeholder values and remove optional folders you do not need.
+
 ## Suggested Skill Layout
 
 ```text
