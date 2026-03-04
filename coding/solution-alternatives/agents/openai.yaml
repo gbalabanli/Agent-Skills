@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solution Alternatives"
+  short_description: "Generate and optimize competing solution options under constraints."
+  default_prompt: "Analyze this hard issue, resolve ambiguity in up to two rounds, model constraints and dependencies, generate alternatives, optimize with the selected mode, and recommend one option with fallback conditions."
