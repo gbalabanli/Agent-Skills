@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Review Execute"
+  short_description: "Compare three coding scaffolds with review and execution."
+  default_prompt: "Use $write-review-execute to build three coding scaffolds, review each, choose theoretical-only or proof-of-concept mode, and recommend the best weighted-score option."
