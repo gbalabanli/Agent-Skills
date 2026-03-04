@@ -39,6 +39,7 @@ Agent-Skills/
 
 - `productivity/phase-planning`: Create `docs/master_plan.md` and linked `docs/phases/phase-XX-<slug>.md` files, then keep the master plan synchronized when phase docs change.
 - `coding/solution-alternatives`: Generate and optimize competing solution alternatives for hard issues using constraint modeling, dependency analysis, and bounded ambiguity handling.
+- `coding/tdd`: Implement features and bug fixes with a strict Test-Driven Development workflow (Red-Green-Refactor) and regression-first bugfixing.
 
 ## Adding a New Skill
 

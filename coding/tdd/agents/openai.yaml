@@ -1,0 +1,4 @@
+interface:
+  display_name: "TDD"
+  short_description: "Develop features and bug fixes with strict Red-Green-Refactor."
+  default_prompt: "Use a strict TDD workflow to implement this feature or fix this bug: clarify ambiguities, write a failing test first, implement minimal code to pass, refactor safely, and report test evidence."
