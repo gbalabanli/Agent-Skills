@@ -1,0 +1,4 @@
+interface:
+  display_name: "Document Creator"
+  short_description: "Create template-based structured documents as PDF outputs."
+  default_prompt: "Use $document-creator to ask for template selection first, then generate a structured document with the official paper template."

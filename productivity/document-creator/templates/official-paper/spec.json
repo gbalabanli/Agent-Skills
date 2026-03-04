@@ -1,0 +1,66 @@
+{
+  "id": "official-paper",
+  "display_name": "official paper",
+  "page": {
+    "size": "A4",
+    "margin_mm": {
+      "top": 25,
+      "right": 22,
+      "bottom": 25,
+      "left": 22
+    }
+  },
+  "typography": {
+    "font_family": "Times-Roman",
+    "title_font": "Times-Bold",
+    "heading_font": "Times-Bold",
+    "monospace_font": "Courier",
+    "title_size_pt": 22,
+    "subtitle_size_pt": 13,
+    "body_size_pt": 11,
+    "heading_size_pt": 14,
+    "caption_size_pt": 10,
+    "line_spacing": 1.35
+  },
+  "structure": {
+    "title_page_first": true,
+    "index_page_second": true,
+    "main_sections": [
+      { "id": "introduction", "title": "Introduction" },
+      { "id": "findings", "title": "Findings" },
+      { "id": "pros_and_cons", "title": "Pros and Cons" },
+      { "id": "conclusion", "title": "Conclusion" }
+    ],
+    "references_title": "References"
+  },
+  "index": {
+    "include_explanations": true,
+    "default_section_summaries": {
+      "introduction": "Defines the problem scope, context, and assumptions used in this paper.",
+      "findings": "Presents key evidence, observations, and comparative analysis.",
+      "pros_and_cons": "Explains tradeoffs, benefits, and limitations of the findings.",
+      "conclusion": "Summarizes outcomes and recommends practical next actions."
+    }
+  },
+  "quality": {
+    "min_word_count": 250,
+    "target_word_count": 300
+  },
+  "tables": {
+    "caption_prefix": "Table",
+    "header_background_rgb": [235, 235, 235],
+    "grid_line_rgb": [120, 120, 120]
+  },
+  "math_schema": {
+    "caption_prefix": "Schema",
+    "render_mode": "structured-readable"
+  },
+  "code_schema": {
+    "caption_prefix": "Code Schema",
+    "render_mode": "structured-readable"
+  },
+  "references": {
+    "style": "wikipedia-link",
+    "default_note": "Provides background context and terminology support for this section."
+  }
+}

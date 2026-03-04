@@ -1,0 +1,92 @@
+{
+  "template": "official paper",
+  "title": "Autonomous Document Generation for Structured Technical Reports",
+  "subtitle": "A practical template-driven workflow",
+  "authors": [
+    "Bora Balabanli"
+  ],
+  "date": "2026-03-04",
+  "sections": {
+    "introduction": [
+      {
+        "type": "paragraph",
+        "text": "This paper outlines a deterministic workflow for creating formal documents from structured JSON content."
+      }
+    ],
+    "findings": [
+      {
+        "type": "paragraph",
+        "text": "Template-first generation improves consistency and reduces ambiguity in styling decisions."
+      },
+      {
+        "type": "table",
+        "caption": "Observed quality metrics",
+        "columns": [
+          "Metric",
+          "Manual drafting",
+          "Template-driven"
+        ],
+        "rows": [
+          [
+            "Formatting consistency",
+            "medium",
+            "high"
+          ],
+          [
+            "Revision speed",
+            "slow",
+            "fast"
+          ]
+        ]
+      },
+      {
+        "type": "math",
+        "caption": "Coordinate transform schema",
+        "schema": {
+          "equation": "x' = a*x + b",
+          "variables": {
+            "a": "scale",
+            "b": "offset"
+          }
+        }
+      },
+      {
+        "type": "code",
+        "caption": "Simple transform function",
+        "schema": {
+          "language": "python",
+          "purpose": "Demonstrate code schema rendering.",
+          "code": "def transform(x, a, b):\n    return a * x + b",
+          "input": {
+            "x": "float",
+            "a": "float",
+            "b": "float"
+          },
+          "output": "float"
+        }
+      }
+    ],
+    "pros_and_cons": [
+      {
+        "type": "paragraph",
+        "text": "Pros include predictable formatting and easier validation. Cons include the need for structured input discipline."
+      }
+    ],
+    "conclusion": [
+      {
+        "type": "paragraph",
+        "text": "A template-driven document creator is practical for repeatable formal reporting."
+      }
+    ]
+  },
+  "references": [
+    {
+      "title": "Technical writing",
+      "url": "https://en.wikipedia.org/wiki/Technical_writing"
+    },
+    {
+      "title": "Table of contents",
+      "url": "https://en.wikipedia.org/wiki/Table_of_contents"
+    }
+  ]
+}
