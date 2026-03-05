@@ -44,8 +44,10 @@ Agent-Skills/
 - `productivity/prompt-improvement`: Improve vague prompts through targeted clarifying questions, structured prompt specs, and quality scoring with explicit goal, hard constraints, and optimization constraints.
 - `productivity/document-creator`: Generate template-driven formal documents as PDFs, including an official paper template with title page, index page, ordered sections, and Wikipedia-style references.
 - `productivity/create-guidance`: Clarify vague or high-level requests, propose options with tradeoffs, and provide direct step-by-step guidance.
+- `productivity/goal-constraint-inference`: Infer hard and soft constraints from goals, model dependency/conflict relations, run forward and inverse optimization reasoning, and deliver alternatives plus a best balanced recommendation report.
 - `research/notebooklm`: Research assistant workflow for NotebookLM including authentication, notebook management, iterative questioning, and synthesis with source-grounded responses.
 - `research/google-ai-mode-skill`: Browser-driven Google AI Mode research workflow with query planning, iterative search passes, extraction, and synthesized markdown reporting.
+- `research/web-deepsearch`: Deep web research workflow for complex questions using decomposition, multi-query coverage, evidence synthesis, contradiction handling, and prioritized recommendations with citations.
 
 ## Adding a New Skill
 
