@@ -44,6 +44,7 @@ Agent-Skills/
 - `productivity/document-creator`: Generate template-driven formal documents as PDFs, including an official paper template with title page, index page, ordered sections, and Wikipedia-style references.
 - `productivity/create-guidance`: Clarify vague or high-level requests, propose options with tradeoffs, and provide direct step-by-step guidance.
 - `research/notebooklm`: Research assistant workflow for NotebookLM including authentication, notebook management, iterative questioning, and synthesis with source-grounded responses.
+- `research/google-ai-mode-skill`: Browser-driven Google AI Mode research workflow with query planning, iterative search passes, extraction, and synthesized markdown reporting.
 
 ## Adding a New Skill
 
