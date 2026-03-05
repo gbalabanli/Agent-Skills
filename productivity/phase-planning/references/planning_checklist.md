@@ -2,14 +2,13 @@
 
 Use this checklist before finishing the update:
 
-1. Ask clarifying questions if the project goal, key constraints, phase boundaries, or success criteria are materially ambiguous.
-2. Confirm `docs/master_plan.md` exists and links to every active phase file.
-3. Confirm each phase file links back to `docs/master_plan.md`.
-4. Confirm phase IDs, filenames, and titles match.
-5. Confirm dependencies and unresolved constraint handoffs flow forward and do not create circular sequencing.
-6. Confirm each active constraint is recorded in `docs/master_plan.md` and repeated in each affected phase file.
-7. Confirm phase TODOs and exit criteria trace back to in-scope work, dependencies, or named constraints.
-8. Confirm phase summaries in `docs/master_plan.md` match the detailed phase documents.
-9. Confirm major risks, milestone shifts, and constraint changes from phase docs are reflected in `docs/master_plan.md`.
-10. Confirm assumptions and open questions are labeled instead of hidden.
-11. Confirm the updated plan still uses stable headings so future diffs remain readable.
+1. Ask clarifying questions if the project goal, phase boundaries, or success criteria are materially ambiguous.
+2. Confirm the active master plan file exists and links to every active phase artifact (split files or consolidated sections).
+3. For split layout, confirm each phase file links back to the master plan.
+4. Confirm phase IDs, filenames/headings, and titles match the selected layout.
+5. Confirm dependencies flow forward and do not create circular sequencing.
+6. Confirm phase summaries in the master plan match the detailed phase artifacts.
+7. Confirm major risk, milestone, gate, and quality-target shifts are reflected in the master plan when those sections are present.
+8. Confirm assumptions and open questions are labeled instead of hidden.
+9. Confirm stable headings and existing filename casing/layout are preserved unless restructuring was requested.
+10. Confirm links to supplementary planning specs (if referenced) still resolve.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Phase Planning"
-  short_description: "Create linked master plans and phase docs in docs/."
-  default_prompt: "Analyze this project and produce docs/master_plan.md plus docs/phases/phase-XX-<slug>.md files, then keep docs/master_plan.md synchronized whenever a phase document changes."
+  short_description: "Create synchronized master and phase plans in docs/ (split or consolidated)."
+  default_prompt: "Analyze this project and maintain a linked planning set in docs/: keep the master plan synchronized with phase artifacts, using either split phase files (docs/phases/phase-XX-<slug>.md) or an existing consolidated roadmap file (for example docs/PHASES.md)."
