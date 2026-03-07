@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design to Code Annotator"
+  short_description: "Turn annotated screenshots into implementation specs."
+  default_prompt: "Use $design-to-code-annotator to parse annotated UI screenshots, validate schema completeness, and produce JSON plus markdown exports with screen transitions, component hints, and open questions."

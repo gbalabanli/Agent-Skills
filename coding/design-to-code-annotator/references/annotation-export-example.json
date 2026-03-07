@@ -1,0 +1,104 @@
+{
+  "project_id": "auth-signin-flow",
+  "project_title": "Auth Sign-in to Dashboard Flow",
+  "feature_summary": "User signs in from the login screen and lands on dashboard on success.",
+  "screens": [
+    {
+      "screen_id": "screen_login",
+      "screen_title": "Login Screen",
+      "image_path": "references/examples/screens/screen-login.svg",
+      "screen_notes": "Desktop form layout, email + password + CTA.",
+      "annotations": [
+        {
+          "annotation_id": "a_login_email",
+          "label": "Email Input",
+          "x": 0.29,
+          "y": 0.33,
+          "width": 0.41,
+          "height": 0.08,
+          "interaction_type": "input",
+          "description": "User enters account email.",
+          "expected_result": "Input validates format and stores value in form state.",
+          "target_screen_id": null,
+          "component_hint": "TextField(email)",
+          "development_notes": "Validate email format on blur; show inline error under field.",
+          "priority": "high",
+          "state_before": "Empty field",
+          "state_after": "Valid or invalid email state",
+          "data_dependencies": ["auth.signIn.email"]
+        },
+        {
+          "annotation_id": "a_login_password",
+          "label": "Password Input",
+          "x": 0.29,
+          "y": 0.44,
+          "width": 0.41,
+          "height": 0.08,
+          "interaction_type": "input",
+          "description": "User enters account password.",
+          "expected_result": "Password is masked and submitted with email.",
+          "target_screen_id": null,
+          "component_hint": "PasswordField",
+          "development_notes": "Minimum length 8; add Caps Lock warning if detectable.",
+          "priority": "high",
+          "state_before": "Empty field",
+          "state_after": "Filled masked value",
+          "data_dependencies": ["auth.signIn.password"]
+        },
+        {
+          "annotation_id": "a_login_submit",
+          "label": "Sign In Button",
+          "x": 0.29,
+          "y": 0.57,
+          "width": 0.41,
+          "height": 0.09,
+          "interaction_type": "submit",
+          "description": "User submits login form.",
+          "expected_result": "On success, navigate to dashboard; on failure, show error banner.",
+          "target_screen_id": "screen_dashboard",
+          "component_hint": "PrimaryButton",
+          "development_notes": "Disable button while request is pending. Retry on network failure.",
+          "priority": "high",
+          "state_before": "Form valid, idle",
+          "state_after": "Loading then success or error",
+          "data_dependencies": ["POST /api/auth/login", "session token"]
+        }
+      ]
+    },
+    {
+      "screen_id": "screen_dashboard",
+      "screen_title": "Dashboard Home",
+      "image_path": "references/examples/screens/screen-dashboard.svg",
+      "screen_notes": "Landing view after successful sign-in.",
+      "annotations": [
+        {
+          "annotation_id": "a_dashboard_welcome",
+          "label": "Welcome Header",
+          "x": 0.11,
+          "y": 0.12,
+          "width": 0.52,
+          "height": 0.1,
+          "interaction_type": "view",
+          "description": "Shows personalized greeting with user name.",
+          "expected_result": "Header reflects fetched profile data.",
+          "target_screen_id": null,
+          "component_hint": "HeroHeader",
+          "development_notes": "Render skeleton until profile API resolves.",
+          "priority": "medium",
+          "state_before": "No profile data",
+          "state_after": "Profile hydrated",
+          "data_dependencies": ["GET /api/profile"]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "link_id": "l_login_to_dashboard",
+      "from_screen_id": "screen_login",
+      "from_annotation_id": "a_login_submit",
+      "to_screen_id": "screen_dashboard",
+      "transition_note": "Submit success route transition to /dashboard"
+    }
+  ]
+}
