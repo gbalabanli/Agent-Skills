@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Documentation"
+  short_description: "Write and review code docs."
+  default_prompt: "Use $code-documentation to create or improve code documentation, apply the Code Documentation template, and run a concise review pass for correctness, gaps, and maintainability."

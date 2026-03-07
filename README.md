@@ -38,6 +38,7 @@ Agent-Skills/
 ## Current Skills
 
 - `productivity/phase-planning`: Create `docs/master_plan.md` and linked `docs/phases/phase-XX-<slug>.md` files, then keep the master plan synchronized when phase docs change.
+- `coding/code-documentation`: Create, rewrite, and review code documentation for repositories, modules, APIs, inline docs, and engineering workflows using a practical template plus a direct review pass.
 - `coding/solution-alternatives`: Generate and optimize competing solution alternatives for hard issues using constraint modeling, dependency analysis, and bounded ambiguity handling.
 - `coding/tdd`: Implement features and bug fixes with a strict Test-Driven Development workflow (Red-Green-Refactor) and regression-first bugfixing.
 - `coding/write-review-execute`: Compare exactly three implementation scaffolds using a write-review-execute loop with optional proof-of-concept runs and weighted scoring.
