@@ -1,0 +1,4 @@
+interface:
+  display_name: "Coding Coach"
+  short_description: "Coach coding momentum from same-day Codex sessions."
+  default_prompt: "Use $coding-momentum-coach to inspect today's Codex sessions, score coding momentum, show my current streak, and give me one concrete next mission."

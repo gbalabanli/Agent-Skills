@@ -1,0 +1,4 @@
+interface:
+  display_name: "Crawl4AI Coder Helper"
+  short_description: "Build Crawl4AI scrapers and service files"
+  default_prompt: "Use $crawl4ai-coder-helper to build the needed Crawl4AI files for this scraping goal."
