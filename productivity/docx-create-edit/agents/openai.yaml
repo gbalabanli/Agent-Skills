@@ -1,4 +1,4 @@
 interface:
-  display_name: "DOCX Application Form"
-  short_description: "Create and update application-form DOCX files."
-  default_prompt: "Use $docx-application-form to create a new application-form DOCX or update an existing one with a targeted, professional supporting statement."
+  display_name: "DOCX Create Edit"
+  short_description: "Create new DOCX files and update existing ones."
+  default_prompt: "Use $docx-create-edit to create a new DOCX from a prompt or update an existing one with a targeted, professional supporting statement."

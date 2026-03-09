@@ -1,11 +1,11 @@
 ---
-name: docx-application-form
-description: Create new application-form DOCX files from prompts and update existing application-form or formal-request DOCX files with AI-drafted sections while preserving structure, tone, and file safety. Use when Codex must read a `.docx`, draft content such as qualifications, supporting statements, examples, or motivation paragraphs, insert or replace targeted sections, or generate a fresh application document from scratch.
+name: docx-create-edit
+description: Create new DOCX files from prompts and update existing application-form, formal-request, or similar professional DOCX files with AI-drafted sections while preserving structure, tone, and file safety. Use when Codex must read a `.docx`, draft content such as qualifications, supporting statements, examples, motivation paragraphs, or formal responses, insert or replace targeted sections, or generate a fresh document from scratch.
 ---
 
-# DOCX Application Form
+# DOCX Create Edit
 
-Use this skill to create or update professional `.docx` application forms without treating the document like freeform text.
+Use this skill to create or update professional `.docx` files without treating the document like freeform text.
 
 ## Workflow
 
