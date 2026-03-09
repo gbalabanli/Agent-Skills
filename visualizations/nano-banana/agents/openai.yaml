@@ -1,0 +1,6 @@
+interface:
+  display_name: "Nano Banana"
+  short_description: "Create or edit images with Gemini Nano Banana."
+  default_prompt: "Use $nano-banana to generate or edit an image with the Gemini CLI Nano Banana extension, verify local setup, and produce a tight prompt plus the exact command to run."
+policy:
+  allow_implicit_invocation: true
