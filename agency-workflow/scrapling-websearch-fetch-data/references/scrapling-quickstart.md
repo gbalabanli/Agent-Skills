@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-pip install -U scrapling
+pip install -U "scrapling[ai]"
 ```
 
 ## Choose The Right Fetcher
@@ -69,3 +69,4 @@ class DemoSpider(Spider):
 - Add max-page and max-item guards to prevent runaway crawls.
 - Keep per-domain concurrency conservative unless you control the target.
 - Always store source URL and fetch timestamp with extracted records.
+- Prefer the Scrapling MCP server for one-off fetch and extraction tasks inside Codex; use Python code when the task needs reusable scripts or custom control flow.

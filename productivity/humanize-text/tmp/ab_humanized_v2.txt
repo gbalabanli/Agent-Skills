@@ -1,0 +1,110 @@
+I reviewed your task-management skill with a practical lens: what helps in daily work, and what becomes painful as soon as the list gets busy.
+
+The short version is this: the current setup is clean and easy to live with, but it is still a starter system. It works when you have a modest list and one person managing it. Once you have lots of active items, waiting items, and cross-team context, the limits show up quickly.
+
+Right now the core is one markdown file (`TASKS.md`) with four sections: Active, Waiting On, Someday, and Done. That is simple, readable, and git-friendly, which is a real advantage. But those same strengths come with tradeoffs:
+
+- no real priority model
+- weak metadata
+- no automatic reminders
+- no query/filtering language
+- no task dependencies
+- no integrations with calendar, git, Slack, or email
+
+So the system is usable, but not yet strong for operational work.
+
+Where it already does well:
+
+1. You can read and edit everything quickly.
+2. There is almost no setup burden.
+3. Versioning with git is natural.
+4. The structure is obvious to new users.
+
+Where it needs work first:
+
+1. Better metadata
+2. Priority and urgency
+3. Search and filters
+
+Those three upgrades will improve day-to-day usability immediately without forcing a big rewrite.
+
+On metadata, I would add only fields that change decisions:
+
+- `priority` (high/medium/low)
+- `tags`
+- `category` (project or stream)
+- `assignee`
+- `due`
+- `created`
+- `est` (estimated effort)
+- `notes`
+
+Example:
+
+- [ ] **Prepare launch brief** | priority:high | tags:launch,client | due:2026-03-14 | est:2h
+  Category: Marketing | Assignee: @john
+  Notes: Waiting on budget confirmation
+
+This gives you enough structure to filter, sort, and report without turning the file into a mini database.
+
+On priority: add urgency as a separate signal. A high-priority task that is not urgent should not beat a medium-priority task due tomorrow. Keep both:
+
+- priority: high / medium / low
+- urgency: true / false
+
+Then sort with a simple order:
+
+1. overdue
+2. due today
+3. urgent + high
+4. high
+5. medium
+6. low
+
+That ordering alone improves focus.
+
+Search is the next bottleneck. Once task count grows, manual scanning becomes expensive. Add command-style queries:
+
+- `find tasks tag:client`
+- `find tasks priority:high`
+- `show tasks due:this-week`
+- `find tasks assignee:@john`
+
+You do not need full query grammar at first. A few predictable filters will cover most real usage.
+
+For due dates, support natural phrasing like “tomorrow,” “next Friday,” and “in 3 days,” then store normalized ISO dates in the file. This keeps input friendly but keeps data reliable.
+
+After that, move to dependencies and subtasks. For complex work, flat tasks hide blockers. Parent tasks with child checkboxes and `depends:#id` references will make project flow visible.
+
+You also mention `dashboard.html`. That should be implemented because it can unlock better workflows:
+
+- quick overview of overdue and due-soon items
+- section-based board view
+- fast filtering by tag, priority, assignee
+- completion trend over time
+
+Keep it lightweight at first. It does not need a framework-heavy architecture to be useful.
+
+Integrations should come later, not first. Calendar sync and git mapping are valuable, but only after your task data model is stable. Otherwise integration logic gets brittle.
+
+Recommended rollout:
+
+Phase 1 (quick wins):
+- metadata
+- priority + urgency
+- basic search
+- due-date normalization
+
+Phase 2:
+- subtasks
+- dependencies
+- recurring tasks
+- stale-task prompts
+
+Phase 3:
+- dashboard UI
+- external integrations
+
+If you execute in that order, users will feel improvement in the first sprint rather than waiting for a big-bang release.
+
+Bottom line: the current skill is a solid base, but it is underpowered for real operational planning. Build metadata + triage + filtering first, then layer on visualization and integrations. That gives you the best value per engineering effort.

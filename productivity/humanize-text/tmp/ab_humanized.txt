@@ -1,0 +1,240 @@
+Task Management Skill Review: What Works, What Hurts, and What to Improve Next
+
+Generated: February 26, 2026
+System: Opencode Agent
+
+I reviewed the current task-management skill and, at a high level, it does the job for lightweight use. It is simple, easy to understand, and easy to keep in version control. The problem is that it starts to break down once task volume grows or work gets more collaborative.
+
+Right now, the skill uses one markdown file (`TASKS.md`) with four sections: Active, Waiting On, Someday, and Done. That structure is clean, but it is also pretty rigid. It gives you basic CRUD behavior through natural-language commands, but not much depth beyond that.
+
+## Quick status snapshot
+
+The current system is strongest in simplicity and weakest in intelligence and workflow depth.
+
+- Task metadata: minimal (mostly title + optional due date), high-impact gap
+- Organization: four static buckets, acceptable but limited
+- Tracking: manual status updates only, high-priority problem
+- UX: text-only interaction, workable but not flexible
+- Integrations: none
+- Automation: none
+- Reporting: none
+
+## What is already good
+
+- Markdown format keeps everything readable
+- No external service or DB needed
+- Git history works naturally
+- Low setup effort for new users
+- Four sections are enough for basic personal tracking
+
+## Current pain points
+
+- No built-in priority or urgency model
+- Very limited metadata (no tags, assignee, category, estimates, source)
+- No reminders or deadline intelligence
+- No subtasks or dependency handling
+- No search/filter commands
+- No external integrations (calendar, git, chat, email)
+- `dashboard.html` is referenced but not implemented
+
+## Recommended upgrades
+
+### 1) Expand task metadata first
+
+This is the biggest win for the least effort. Add fields like:
+
+- `priority` (high/medium/low)
+- `tags` (comma-separated)
+- `category` or project name
+- `est` and optional `actual`
+- `created`
+- `assignee`
+- `source`
+- `notes`
+
+Suggested line format:
+
+- [ ] **Task Title** | priority:high | tags:urgent,client | due:2026-03-05 | est:2h
+  Category: Marketing | Assignee: @john
+  Notes: confirm budget before launch
+  Created: 2026-02-26 | Source: Slack #general
+
+### 2) Add priority + urgency
+
+Today, all tasks look equally important. That makes triage hard.
+
+Recommended model:
+
+- Priority: `high`, `medium`, `low`
+- Urgency flag: `urgent:true|false`
+
+Then sort tasks automatically inside each section based on priority and due date.
+
+### 3) Support subtasks and dependencies
+
+Complex work needs decomposition and blocker visibility.
+
+Example:
+
+- [ ] **Launch campaign** | priority:high | due:2026-03-20
+  - [ ] Draft landing-page copy
+  - [x] Finalize banner assets
+  - [ ] Configure email flow
+
+Dependency example:
+
+- [ ] **Deploy release** | priority:high | depends:#12
+  Blocked by task #12 (QA sign-off)
+
+### 4) Add search and filter commands
+
+As soon as the list grows, navigation becomes the real bottleneck.
+
+Useful queries:
+
+- `find tasks tag:urgent`
+- `find tasks priority:high`
+- `find tasks assignee:@john`
+- `show tasks due:this-week`
+- `find tasks text:budget`
+
+Useful quick views:
+
+- Today
+- This week
+- Waiting On
+- By project
+- Completed today
+
+### 5) Improve due-date handling
+
+Right now due dates are mostly static text. Add parsing for natural dates:
+
+- `due tomorrow`
+- `due next Friday`
+- `due in 3 days`
+- `due end of month`
+
+Then add deadline signals:
+
+- overdue indicator
+- due-today indicator
+- due-soon indicator (for next 48 hours)
+
+### 6) Add recurring tasks
+
+Recurring work should not be retyped manually.
+
+Examples:
+
+- [ ] Weekly team sync | recurring:weekly monday
+- [ ] Monthly KPI report | recurring:monthly day=1
+- [ ] Quarterly review | recurring:quarterly
+
+### 7) Build the dashboard that is already referenced
+
+`dashboard.html` should exist if the skill references it.
+
+Minimum useful dashboard:
+
+- Kanban board (Active / Waiting On / Someday / Done)
+- Priority and overdue counters
+- Completion trend
+- Filter panel
+- Quick add
+- Recent activity feed
+
+Implementation direction:
+
+1. Parse `TASKS.md` in browser
+2. Render structured views
+3. Save edits back to file format
+4. Refresh when source file changes
+
+### 8) Add integrations
+
+The system becomes much more useful with external context.
+
+Calendar:
+
+- push due dates to calendar
+- block work time for high-priority tasks
+
+Git:
+
+- convert TODO comments into tasks
+- link task IDs to branch/commit
+
+Comms:
+
+- extract action items from Slack/email
+- post reminders back to chosen channel
+
+### 9) Add automation and smart behavior
+
+Low-friction automation increases adoption.
+
+Smart features to add:
+
+- detect commitment phrases from notes/chats
+- suggest tags and priority from task text
+- estimate effort from historical patterns
+- stale-task checks (e.g., Waiting On older than 7 days)
+
+## Implementation plan (phased)
+
+### Phase 1 (1-2 weeks): Foundation
+
+- richer metadata
+- priority system
+- updated task format
+
+### Phase 2 (2-3 weeks): Better UX
+
+- natural-date parsing
+- search/filter
+- auto-sorting
+
+### Phase 3 (3-4 weeks): Advanced task logic
+
+- subtasks
+- dependencies
+- recurring tasks
+- stale-task detection
+
+### Phase 4 (4-6 weeks): Dashboard
+
+- HTML dashboard
+- charts + board interactions
+
+### Phase 5 (6-8 weeks): Integrations
+
+- calendar
+- git
+- auto-extraction pipelines
+
+## Quick wins to start immediately
+
+1. Add `priority` with visual markers
+2. Add `tags`
+3. Add `created` + `est`
+4. Add simple natural-date parser
+5. Highlight overdue tasks
+6. Add basic `find tasks tag:...` support
+
+## Suggested v2 skill direction
+
+Name: `task-management-v2`
+Description: advanced markdown-based task management with metadata, priority, filtering, and dependencies
+
+Command examples:
+
+- `add task "Write release notes" priority:high due:tomorrow`
+- `find tasks priority:high tag:client`
+- `show overdue tasks`
+- `mark task #42 complete`
+- `what is due this week?`
+
+## Final take
+
+The current skill is a good starter system, but not yet a complete productivity system. The most practical path is to implement metadata + priority + search first, then move into dashboard and integrations. That sequence gives users immediate value while keeping technical risk controlled.

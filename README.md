@@ -51,6 +51,10 @@ Agent-Skills/
 - `research/google-ai-mode-skill`: Browser-driven Google AI Mode research workflow with query planning, iterative search passes, extraction, and synthesized markdown reporting.
 - `research/web-deepsearch`: Deep web research workflow for complex questions using decomposition, multi-query coverage, evidence synthesis, contradiction handling, and prioritized recommendations with citations.
 
+## External Local Skills
+
+- `web-scraping`: Installed in the local agent environment outside this repository at `%USERPROFILE%\.agents\skills\web-scraping\SKILL.md`. Provenance is locked in `%USERPROFILE%\.agents\.skill-lock.json` to `mindrally/skills` via `https://github.com/mindrally/skills.git`, skill path `web-scraping/SKILL.md`, installed on `2026-03-09`. This is distinct from the `jamditis/claude-skills-journalism` skill published on `skills.sh`.
+
 ## Adding a New Skill
 
 1. Choose the most appropriate category at the repository root.

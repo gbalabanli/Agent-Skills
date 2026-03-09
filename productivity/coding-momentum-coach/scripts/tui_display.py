@@ -5,19 +5,44 @@ Compatible with Windows and Unix terminals.
 """
 import subprocess
 import json
+import os
 import sys
-from datetime import datetime
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[3]
+ANALYZER_SCRIPT = ROOT_DIR / "productivity" / "coding-momentum-coach" / "scripts" / "analyze_codex_day.py"
+
+
+def configure_output_streams():
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                reconfigure(errors="replace")
+            except Exception:
+                pass
+
 
 def run_analysis():
     """Run the analyzer and get JSON output."""
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
     result = subprocess.run(
-        [sys.executable, "productivity/coding-momentum-coach/scripts/analyze_codex_day.py", 
-         "--format", "json"],
+        [sys.executable, str(ANALYZER_SCRIPT), "--format", "json"],
         capture_output=True,
         text=True,
-        cwd="C:/Users/Bora/Desktop/Workspace/agents/agent-skills"
+        encoding="utf-8",
+        errors="replace",
+        cwd=str(ROOT_DIR),
+        env=env,
     )
+    if result.returncode != 0:
+        detail = result.stderr.strip() or "unknown error"
+        raise RuntimeError(f"Analyzer exited with {result.returncode}: {detail}")
+    if not result.stdout.strip():
+        raise RuntimeError("Analyzer returned no output")
     return json.loads(result.stdout)
+
 
 def color(text, code):
     """Add ANSI color code."""
@@ -29,8 +54,10 @@ def progress_bar(value, max_val, width=20):
     bar = "=" * filled + "-" * (width - filled)
     return f"[{bar}] {value}/{max_val}"
 
+
 def display_tui():
     """Display formatted TUI output."""
+    configure_output_streams()
     try:
         data = run_analysis()
     except Exception as e:
@@ -105,6 +132,7 @@ def display_tui():
     
     print(color("===========================================================", "36"))
     print()
+
 
 if __name__ == "__main__":
     display_tui()

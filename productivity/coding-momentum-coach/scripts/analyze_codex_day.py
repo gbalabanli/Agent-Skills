@@ -14,6 +14,16 @@ IDLE_GAP_MINUTES = 45
 ACTIVE_GAP_CAP_MINUTES = 10
 
 
+def configure_output_streams() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                reconfigure(errors="replace")
+            except Exception:
+                pass
+
+
 @dataclass(frozen=True)
 class Event:
     timestamp: datetime
@@ -498,6 +508,7 @@ def write_ledger(state_dir: Path, target: date, summary: dict[str, Any]) -> None
 
 
 def main() -> int:
+    configure_output_streams()
     args = parse_args()
     timezone = detect_timezone(args.timezone)
     target = parse_target_date(args.target_date, timezone)
