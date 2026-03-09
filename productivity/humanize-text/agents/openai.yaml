@@ -1,0 +1,4 @@
+interface:
+  display_name: "Humanize Text"
+  short_description: "Rewrite AI-sounding text naturally"
+  default_prompt: "Humanize this text while preserving its meaning, facts, and tone constraints."

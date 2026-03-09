@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Humanize Text Detector</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Humanize Text</p>
+        <h1>Paste text, fetch a live AI score, compare it with other detectors.</h1>
+        <p class="lede">
+          This tool now uses live <strong>AiDetector.com</strong>, <strong>QuillBot</strong>, and
+          <strong>Scribbr</strong> scans, then keeps manual comparison only where stable APIs are
+          not available.
+        </p>
+      </section>
+
+      <section class="layout">
+        <div class="panel input-panel">
+          <label class="label" for="sourceText">Source text</label>
+          <textarea
+            id="sourceText"
+            placeholder="Paste the full external text here..."
+          ></textarea>
+
+          <div class="actions">
+            <button id="analyzeButton" type="button">Analyze text</button>
+            <button id="humanizeButton" type="button">Humanize + Recheck</button>
+            <button id="clearButton" type="button" class="secondary">Clear</button>
+          </div>
+
+          <div class="helper-grid">
+            <div class="helper-card">
+              <span class="helper-title">Quick links</span>
+              <a href="https://aidetector.com/" target="_blank" rel="noreferrer">AiDetector.com</a>
+              <a href="https://copyleaks.com/ai-content-detector" target="_blank" rel="noreferrer">Copyleaks</a>
+              <a href="https://quillbot.com/ai-content-detector" target="_blank" rel="noreferrer">QuillBot</a>
+              <a href="https://www.scribbr.com/ai-detector/" target="_blank" rel="noreferrer">Scribbr</a>
+            </div>
+            <div class="helper-card">
+              <span class="helper-title">Usage note</span>
+              <p>
+                AiDetector.com, QuillBot, and Scribbr are fetched automatically. Paste the same
+                text into Copyleaks and enter that score for comparison.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel results-panel">
+          <div class="score-row">
+            <div class="score-card primary">
+              <span class="score-label">AiDetector AI score</span>
+              <strong id="localScore">0</strong>
+              <span id="localVerdict" class="score-subtitle">No text</span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">Human score</span>
+              <strong id="confidenceScore">0</strong>
+              <span id="confidenceLabel" class="score-subtitle">No text</span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">Words</span>
+              <strong id="wordCount">0</strong>
+              <span class="score-subtitle">Input size</span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">Sentences</span>
+              <strong id="sentenceCount">0</strong>
+              <span class="score-subtitle">Cadence sample</span>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Live result details</h2>
+            <div class="meta-grid">
+              <div class="meta-card">
+                <span class="score-label">Confidence</span>
+                <strong id="liveConfidence">-</strong>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Model</span>
+                <strong id="modelUsed">-</strong>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Report ID</span>
+                <strong id="reportId">-</strong>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Expires</span>
+                <strong id="expiresAt">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Analysis summary</h2>
+            <div id="summaryText" class="summary-card">
+              Run an analysis to fetch the detector summary.
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Humanized Output</h2>
+            <textarea id="humanizedText" readonly placeholder="Humanized output will appear here after retry loop."></textarea>
+            <div class="comparison-summary">
+              <div>
+                <span class="score-label">Baseline AI score</span>
+                <strong id="baselineScore">-</strong>
+              </div>
+              <div>
+                <span class="score-label">Final AI score</span>
+                <strong id="finalScore">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>External detector comparison</h2>
+            <div class="live-compare-grid">
+              <div class="meta-card">
+                <span class="score-label">QuillBot AI score</span>
+                <strong id="quillbotLiveScore">-</strong>
+                <span id="quillbotVerdict" class="score-subtitle">Not fetched yet</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">QuillBot model</span>
+                <strong id="quillbotModel">-</strong>
+                <span id="quillbotReportId" class="score-subtitle">No report</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Human-paraphrased</span>
+                <strong id="quillbotHumanParaphrased">-</strong>
+                <span class="score-subtitle">Chunk-derived signal</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">AI-paraphrased</span>
+                <strong id="quillbotAiParaphrased">-</strong>
+                <span id="quillbotTimeout" class="score-subtitle">No timeout data</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Scribbr AI score</span>
+                <strong id="scribbrLiveScore">-</strong>
+                <span id="scribbrVerdict" class="score-subtitle">Not fetched yet</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Scribbr model</span>
+                <strong id="scribbrModel">-</strong>
+                <span id="scribbrReportId" class="score-subtitle">No report</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">Human-paraphrased</span>
+                <strong id="scribbrHumanParaphrased">-</strong>
+                <span class="score-subtitle">Chunk-derived signal</span>
+              </div>
+              <div class="meta-card">
+                <span class="score-label">AI-paraphrased</span>
+                <strong id="scribbrAiParaphrased">-</strong>
+                <span id="scribbrTimeout" class="score-subtitle">No timeout data</span>
+              </div>
+            </div>
+            <div class="external-grid">
+              <label>
+                <span>Copyleaks</span>
+                <input id="copyleaksScore" type="number" min="0" max="100" placeholder="0-100" />
+              </label>
+            </div>
+            <div class="comparison-summary">
+              <div>
+                <span class="score-label">Average external score</span>
+                <strong id="externalAverage">-</strong>
+              </div>
+              <div>
+                <span class="score-label">Spread vs local</span>
+                <strong id="scoreSpread">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Live notes</h2>
+            <ul id="highlights" class="signal-list">
+              <li>Run an analysis to see detector notes.</li>
+            </ul>
+          </div>
+
+          <div class="panel-block">
+            <h2>Retry Diagnostics</h2>
+            <ul id="retryLog" class="note-list">
+              <li>No retry run yet.</li>
+            </ul>
+          </div>
+
+          <div class="panel-block two-column">
+            <div>
+              <h2>Sentence breakdown</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>AI %</th>
+                    <th>Verdict</th>
+                  </tr>
+                </thead>
+                <tbody id="patternTable">
+                  <tr>
+                    <td colspan="3">No analysis yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h2>Notes</h2>
+              <ul id="notes" class="note-list">
+                <li>This panel shows metadata returned by the live detector call.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>QuillBot chunk breakdown</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>AI %</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody id="quillbotTable">
+                <tr>
+                  <td colspan="3">No QuillBot analysis yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel-block">
+            <h2>Scribbr chunk breakdown</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>AI %</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody id="scribbrTable">
+                <tr>
+                  <td colspan="3">No Scribbr analysis yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
