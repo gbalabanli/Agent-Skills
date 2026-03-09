@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stitch Remotion Walkthrough"
+  short_description: "Turn Stitch screens into modular Remotion walkthrough videos."
+  default_prompt: "Use $stitch-remotion-walkthrough to turn Stitch screens or exported screenshots into a modular Remotion walkthrough: stage assets, build a stable screen manifest, create reusable composition files, validate the setup, and render if the environment supports it."

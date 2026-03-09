@@ -42,6 +42,7 @@ Agent-Skills/
 - `coding/solution-alternatives`: Generate and optimize competing solution alternatives for hard issues using constraint modeling, dependency analysis, and bounded ambiguity handling.
 - `coding/tdd`: Implement features and bug fixes with a strict Test-Driven Development workflow (Red-Green-Refactor) and regression-first bugfixing.
 - `coding/write-review-execute`: Compare exactly three implementation scaffolds using a write-review-execute loop with optional proof-of-concept runs and weighted scoring.
+- `visualizations/stitch-remotion-walkthrough`: Turn Stitch screens or exported screenshots into modular Remotion walkthrough videos with staged assets, a stable screen manifest, and render validation.
 - `productivity/prompt-improvement`: Improve vague prompts through targeted clarifying questions, structured prompt specs, and quality scoring with explicit goal, hard constraints, and optimization constraints.
 - `productivity/document-creator`: Generate template-driven formal documents as PDFs, including an official paper template with title page, index page, ordered sections, and Wikipedia-style references.
 - `productivity/create-guidance`: Clarify vague or high-level requests, propose options with tradeoffs, and provide direct step-by-step guidance.
