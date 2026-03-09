@@ -1,4 +1,4 @@
 interface:
   display_name: "Goal Constraint Inference"
-  short_description: "Infer constraints and optimize goal tradeoffs."
-  default_prompt: "Use $goal-constraint-inference to infer hard and soft constraints from this goal, map dependency/conflict relations, compare alternatives, and recommend the best balanced target."
+  short_description: "Infer constraints, anti-goals, and optimize tradeoffs."
+  default_prompt: "Use $goal-constraint-inference to infer hard, soft, and negative constraints from this goal, ask clarifying anti-goal questions when ambiguity remains, map dependency/conflict relations, compare alternatives, and recommend the best balanced target."

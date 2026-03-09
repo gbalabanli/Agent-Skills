@@ -8,12 +8,13 @@ Use this template for final output.
 - Objective type: maximize | minimize | target-band | multi-objective
 - Success metric(s):
 - Time horizon:
+- Negative constraints / anti-goals:
 - Key assumptions:
 
 ## 2. Inferred Constraints
-| ID | Constraint | Type (Hard/Soft) | Category | Test Method | Confidence | Priority Tier | Weight |
-|----|------------|------------------|----------|-------------|------------|---------------|--------|
-| C1 |            |                  |          |             |            |               |        |
+| ID | Constraint | Type (Hard/Soft) | Category | Test Method | Confidence | Priority Tier | Weight | Original Negative Wording |
+|----|------------|------------------|----------|-------------|------------|---------------|--------|---------------------------|
+| C1 |            |                  |          |             |            |               |        |                           |
 
 Categories: Resource, Policy, Structural, Risk, Quality, Timeline, Cost.
 
@@ -27,6 +28,7 @@ Categories: Resource, Policy, Structural, Risk, Quality, Timeline, Cost.
 
 ### 3.2 Feasibility Assessment
 - Is original goal feasible under inferred hard constraints? yes/no
+- Do any negative constraints empty or nearly empty the feasible set? yes/no
 - If no, minimum required relaxations:
 - Critical bottlenecks:
 
@@ -68,6 +70,7 @@ Categories: Resource, Policy, Structural, Risk, Quality, Timeline, Cost.
 - Recommended alternative:
 - Why this is best balanced:
 - Dominant constraints (most important):
+- Boundary-defining negative constraints:
 - Relaxable constraints (lowest cost to relax):
 - Revised goal (if original is infeasible):
 
