@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unsplash Downloader"
+  short_description: "Find and download Unsplash images from prompts."
+  default_prompt: "Use $unsplash-image-search-download to search Unsplash for mountain sunset and download the best-matching image."

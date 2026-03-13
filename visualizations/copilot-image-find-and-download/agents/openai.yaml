@@ -1,0 +1,6 @@
+interface:
+  display_name: "Copilot Image Find and Download"
+  short_description: "Find Copilot images and download one file."
+  default_prompt: "Use $copilot-image-find-and-download to find an image for the user's prompt and download it to ~/Downloads/temp."
+policy:
+  allow_implicit_invocation: true
