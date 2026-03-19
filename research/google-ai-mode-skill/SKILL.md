@@ -7,6 +7,11 @@ description: Use this skill when the user requests current information, document
 
 Query Google's AI Search mode to retrieve comprehensive, source-grounded answers from across the web.
 
+This skill now uses a hybrid strategy:
+- Prefer Google AI Mode extraction first
+- If AI Mode DOM extraction fails after the page loads, fall back to classic Google web-result scraping
+- The fallback follows the `web-scraping` skill style: browser automation, resilient selectors, deduped links, graceful error handling
+
 ## When to Use This Skill
 
 Trigger this skill when the user:
@@ -96,7 +101,8 @@ python scripts/run.py search.py --query "..." --output result.md --json
 2. Optimize query using template above
 3. Inform user: "Searching for: '[optimized query]'"
 4. Execute search with `--save --debug` flags
-5. Return results with inline citations [1][2][3]
+5. If AI Mode extraction fails but Google results are available, return the web-results fallback with sources
+6. Return results with inline citations [1][2][3] when available
 
 ## Script Execution
 
@@ -127,8 +133,9 @@ The `run.py` wrapper automatically:
 2. **Eliminates CAPTCHAs**: Persistent context means Google recognizes the browser → rarely triggers CAPTCHA
 3. **AI Content Detection**: Waits for Google AI Overview to appear on page
 4. **Citation Extraction**: Injects JavaScript to extract source links from AI response
-5. **Markdown Conversion**: Converts HTML to markdown with inline citations [1][2][3]
-6. **Fast Results**: Typical search completes in 5-7 seconds (no CAPTCHA)
+5. **Web-Scraping Fallback**: If AI Mode extraction breaks, scrapes classic Google result cards in the same browser session
+6. **Markdown Conversion**: Converts AI or fallback result content to markdown with sources
+7. **Fast Results**: Typical search completes in seconds when no CAPTCHA is present
 
 ## CAPTCHA Handling
 
@@ -191,6 +198,7 @@ python scripts/run.py search.py --query "Microservices security patterns 2026 (A
 | `ModuleNotFoundError` | Use `run.py` wrapper, never execute scripts directly |
 | CAPTCHA every time | First-time setup: solve CAPTCHA once with `--show-browser`, then persistent context preserves session |
 | No AI overview found | Rephrase query with more specificity using optimization template |
+| AI overview DOM changed | The skill now falls back to classic Google web-result scraping automatically |
 | Browser fails to start | Verify internet connection and Chrome installation |
 | Need detailed logs | Use `--debug` flag - log saved to `logs/` folder |
 | AI Mode not available | Your region/country doesn't support Google AI Mode. Use a proxy/VPN to access from supported regions (US, UK, Germany, etc.) |

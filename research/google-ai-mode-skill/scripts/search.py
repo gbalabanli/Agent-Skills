@@ -33,7 +33,7 @@ from bs4 import BeautifulSoup
 
 # Local imports
 from browser_utils import BrowserFactory
-from config import USER_AGENT, PAGE_LOAD_TIMEOUT, AI_RESPONSE_TIMEOUT, RESULTS_DIR, BROWSER_PROFILE_DIR
+from config import USER_AGENT, PAGE_LOAD_TIMEOUT, AI_RESPONSE_TIMEOUT, RESULTS_DIR, BROWSER_PROFILE_DIR, LOGS_DIR
 from logger import get_logger
 
 try:
@@ -74,9 +74,24 @@ CITATION_SELECTORS = [
     'button[aria-label*="links" i]',               # Generic case-insensitive
 ]
 
+MAIN_CONTENT_SELECTORS = [
+    '[data-container-id="main-col"]',
+    '[role="main"]',
+    'main',
+    '#search',
+    'body',
+]
+
+SIDEBAR_SELECTORS = [
+    '[data-container-id="rhs-col"]',
+    '[role="complementary"]',
+    'aside',
+]
+
 # AI Completion Detection - Multi-language
 AI_COMPLETION_BUTTON = '[aria-label*="feedback" i]'  # Language-independent
 AI_COMPLETION_TIMEOUT = 15000  # 15 seconds (SERPO proven)
+CAPTCHA_SOLVE_TIMEOUT = 180
 
 # Text-based completion indicators (fallback)
 AI_COMPLETION_TEXT_INDICATORS = [
@@ -157,9 +172,63 @@ async () => {
                rect.height > 0;
     }
 
-    // Haupt-Container der AI Overview finden
-    const mainCol = document.querySelector('[data-container-id="main-col"]');
-    if (!mainCol) return { error: 'main-col not found (AI Overview missing?)' };
+    function findVisibleContainer(selectors) {
+        for (const selector of selectors) {
+            const matches = Array.from(document.querySelectorAll(selector));
+            for (const match of matches) {
+                if (isVisible(match)) {
+                    return match;
+                }
+            }
+        }
+        return null;
+    }
+
+    function findSidebar() {
+        const selectors = %SIDEBAR_SELECTORS%;
+        const sidebar = findVisibleContainer(selectors);
+        if (sidebar) return sidebar;
+
+        const allCandidates = Array.from(document.querySelectorAll('[aria-label], [role], aside, section, div'));
+        return allCandidates.find((el) => {
+            if (!isVisible(el)) return false;
+            const text = (el.innerText || '').toLowerCase();
+            return text.includes('sources') ||
+                   text.includes('related links') ||
+                   text.includes('quellen') ||
+                   text.includes('links');
+        }) || null;
+    }
+
+    const mainSelectors = %MAIN_CONTENT_SELECTORS%;
+    let mainCol = null;
+
+    for (const selector of mainSelectors) {
+        const matches = Array.from(document.querySelectorAll(selector));
+        for (const candidate of matches) {
+            if (!isVisible(candidate)) continue;
+            const hasCitationButtons = %CITATION_SELECTORS%.some((citationSelector) =>
+                Array.from(candidate.querySelectorAll(citationSelector)).some(isVisible)
+            );
+            const text = (candidate.innerText || '').toLowerCase();
+            const looksLikeAiBlock = text.includes('ai overview') ||
+                                     text.includes('ai-generated') ||
+                                     text.includes('generative ai') ||
+                                     text.includes('ki-antworten') ||
+                                     text.includes('ki-generiert');
+
+            if (hasCitationButtons || looksLikeAiBlock) {
+                mainCol = candidate;
+                break;
+            }
+        }
+        if (mainCol) break;
+    }
+
+    if (!mainCol) {
+        mainCol = findVisibleContainer(mainSelectors);
+    }
+    if (!mainCol) return { error: 'main content container not found' };
 
     // SERPO OPTIMIZATION: Expand "Show more" buttons first
     try {
@@ -214,7 +283,7 @@ async () => {
 
             // Zähle sichtbare Links VOR dem Klick
             const countVisibleLinks = () => {
-                const rhsCol = document.querySelector('[data-container-id="rhs-col"]');
+                const rhsCol = findSidebar();
                 if (!rhsCol) return 0;
                 return Array.from(rhsCol.querySelectorAll('a[href]')).filter(isVisible).length;
             };
@@ -238,7 +307,7 @@ async () => {
         // 3. Quellen aus der Seitenleiste (rhs-col) extrahieren
         const sources = [];
         const seen = new Set();
-        const rhsCol = document.querySelector('[data-container-id="rhs-col"]');
+        const rhsCol = findSidebar();
 
         if (rhsCol) {
             const links = Array.from(rhsCol.querySelectorAll('a[href]'));
@@ -352,6 +421,14 @@ def detect_captcha(page: Page) -> bool:
 
     return False
 
+
+def build_google_search_url(query: str, ai_mode: bool = True) -> str:
+    """Build a Google AI Mode or classic web-search URL for the given query."""
+    encoded_query = query.replace(' ', '+')
+    if ai_mode:
+        return f"https://www.google.com/search?udm=50&q={encoded_query}"
+    return f"https://www.google.com/search?q={encoded_query}"
+
 # =============================================================================
 # MAIN SCRAPER CLASS
 # =============================================================================
@@ -381,21 +458,27 @@ class GoogleAIScraper:
         self.logger.debug("Cleaning up browser resources...")
         try:
             if self.page:
-                self.page.close()
+                page = self.page
+                self.page = None
+                page.close()
                 self.logger.debug("Page closed")
-        except Exception as e:
+        except BaseException as e:
             self.logger.debug(f"Error closing page: {e}")
         try:
             if self.ctx:
-                self.ctx.close()
+                ctx = self.ctx
+                self.ctx = None
+                ctx.close()
                 self.logger.debug("Persistent context closed (profile saved)")
-        except Exception as e:
+        except BaseException as e:
             self.logger.debug(f"Error closing context: {e}")
         try:
             if self.pw:
-                self.pw.stop()
+                pw = self.pw
+                self.pw = None
+                pw.stop()
                 self.logger.debug("Playwright stopped")
-        except Exception as e:
+        except BaseException as e:
             self.logger.debug(f"Error stopping playwright: {e}")
 
     def _clean_html_pre_processing(self, html: str) -> str:
@@ -426,7 +509,11 @@ class GoogleAIScraper:
             self.logger.debug("Sidebar fallback: extracting sources...")
 
             # Get sidebar container
-            sidebar = self.page.query_selector('[data-container-id="rhs-col"]')
+            sidebar = None
+            for selector in SIDEBAR_SELECTORS:
+                sidebar = self.page.query_selector(selector)
+                if sidebar:
+                    break
             if not sidebar:
                 self.logger.debug("Sidebar not found")
                 return []
@@ -472,6 +559,50 @@ class GoogleAIScraper:
             self.logger.error(f"Sidebar fallback failed: {e}")
             return []
 
+    def _dump_debug_page_state(self, reason: str) -> Optional[Path]:
+        """Persist the current page HTML to logs for DOM troubleshooting."""
+        if not self.page or not self.logger.debug_enabled:
+            return None
+
+        try:
+            LOGS_DIR.mkdir(exist_ok=True)
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            safe_reason = re.sub(r'[^a-zA-Z0-9]+', '_', reason).strip('_') or "page_state"
+            dump_path = LOGS_DIR / f"debug_{timestamp}_{safe_reason}.html"
+            dump_path.write_text(self.page.content(), encoding="utf-8")
+            self.logger.debug(f"Saved page dump: {dump_path}")
+            return dump_path
+        except Exception as e:
+            self.logger.debug(f"Failed to save page dump: {e}")
+            return None
+
+    def _wait_for_captcha_to_clear(self) -> bool:
+        """Wait for the manual CAPTCHA page to clear before scraping."""
+        if not self.page:
+            return False
+
+        deadline = time.time() + CAPTCHA_SOLVE_TIMEOUT
+        self.logger.info(f"Waiting up to {CAPTCHA_SOLVE_TIMEOUT}s for CAPTCHA to clear...")
+
+        while time.time() < deadline:
+            try:
+                if not detect_captcha(self.page):
+                    self.logger.info("CAPTCHA cleared; continuing.")
+                    return True
+            except Exception as e:
+                if "browser has been closed" in str(e).lower() or "target closed" in str(e).lower():
+                    self.logger.error("Browser closed while waiting for CAPTCHA to clear")
+                    return False
+                self.logger.debug(f"CAPTCHA wait check failed: {e}")
+
+            try:
+                self.page.wait_for_timeout(1000)
+            except Exception:
+                time.sleep(1)
+
+        self.logger.warning("Timed out waiting for CAPTCHA to clear")
+        return False
+
     def _embed_citations(self, markdown: str, citations: List[Dict]) -> tuple:
         """Ersetzt [CITE-N] Marker durch [1][2] Fußnoten"""
         modified_md = markdown
@@ -500,12 +631,150 @@ class GoogleAIScraper:
 
         return modified_md, citation_sources
 
+    def _format_web_results_fallback(self, results: List[Dict[str, str]], query: str) -> Dict[str, Any]:
+        """Format classic Google web results into the skill's markdown output."""
+        markdown_lines = [
+            "# Google Web Results Fallback",
+            "",
+            "AI Mode extraction was unavailable, so this answer was assembled from classic Google results using browser scraping.",
+            "",
+            f"Query: `{query}`",
+            "",
+        ]
+        sources = []
+
+        for idx, result in enumerate(results, 1):
+            title = (result.get('title') or f"Result {idx}").strip()
+            snippet = (result.get('snippet') or "").strip()
+            url = (result.get('url') or "").strip()
+            display_url = (result.get('display_url') or result.get('source') or "").strip()
+
+            markdown_lines.append(f"{idx}. **{title}** [{idx}]")
+            if snippet:
+                markdown_lines.append(f"   {snippet}")
+            if display_url:
+                markdown_lines.append(f"   `{display_url}`")
+            markdown_lines.append("")
+
+            sources.append({
+                "title": title,
+                "url": url,
+                "source": result.get('source') or display_url,
+            })
+
+        markdown_lines.extend(["---", "", "## Sources:", ""])
+        for idx, source in enumerate(sources, 1):
+            markdown_lines.append(f"[{idx}] {source['title']}  ")
+            markdown_lines.append(source["url"])
+            markdown_lines.append("")
+
+        return {
+            "success": True,
+            "markdown": "\n".join(markdown_lines).strip(),
+            "sources": sources,
+            "source_url": build_google_search_url(query, ai_mode=False),
+            "query": query,
+            "mode": "web_results_fallback",
+        }
+
+    def _extract_classic_google_results(self, query: str) -> List[Dict[str, str]]:
+        """Fallback to classic Google web results using browser scraping techniques."""
+        if not self.page:
+            return []
+
+        fallback_url = build_google_search_url(query, ai_mode=False)
+        print("  🌐 Falling back to classic Google web results...")
+        self.logger.info(f"Classic web-results fallback: {fallback_url}")
+
+        try:
+            self.page.goto(fallback_url, wait_until="domcontentloaded", timeout=PAGE_LOAD_TIMEOUT)
+            self.page.wait_for_timeout(1500)
+        except Exception as e:
+            self.logger.error(f"Classic Google fallback navigation failed: {e}")
+            return []
+
+        if detect_captcha(self.page):
+            self.logger.warning("Classic Google fallback also hit CAPTCHA")
+            return []
+
+        extraction_script = """
+() => {
+    const results = [];
+    const seen = new Set();
+    const blocks = Array.from(document.querySelectorAll('div.g, div.MjjYud, div[data-snc], div.Gx5Zad'));
+
+    function textOrEmpty(el) {
+        return el ? (el.innerText || el.textContent || '').trim() : '';
+    }
+
+    for (const block of blocks) {
+        const h3 = block.querySelector('h3');
+        if (!h3) continue;
+
+        let anchor = h3.closest('a[href]');
+        if (!anchor) {
+            anchor = block.querySelector('a[href]');
+        }
+        if (!anchor) continue;
+
+        const url = anchor.href || '';
+        if (!url.startsWith('http')) continue;
+        if (url.includes('google.com')) continue;
+        if (seen.has(url)) continue;
+
+        const snippet = textOrEmpty(
+            block.querySelector('div.VwiC3b, div[data-sncf="1"], span.aCOpRe, div.yXK7lf, div.s3v9rd')
+        );
+        const displayUrl = textOrEmpty(
+            block.querySelector('cite, div.YrbPuc, span.OSrXXb, span.qzEoUe')
+        );
+
+        seen.add(url);
+        results.push({
+            title: textOrEmpty(h3),
+            url,
+            snippet,
+            display_url: displayUrl,
+            source: (() => {
+                try { return new URL(url).hostname; } catch { return displayUrl; }
+            })(),
+        });
+
+        if (results.length >= 5) break;
+    }
+
+    return results;
+}
+"""
+
+        try:
+            results = self.page.evaluate(extraction_script)
+            self.logger.info(f"Classic Google fallback extracted {len(results)} results")
+            return results or []
+        except Exception as e:
+            self.logger.error(f"Classic Google fallback extraction failed: {e}")
+            return []
+
+    def _build_web_results_fallback(self, query: str, reason: str) -> Dict[str, Any]:
+        """Try classic Google web-result scraping when AI Mode extraction fails."""
+        self.logger.warning(f"Attempting web-results fallback because: {reason}")
+        results = self._extract_classic_google_results(query)
+        if results:
+            fallback_result = self._format_web_results_fallback(results, query)
+            fallback_result["fallback_reason"] = reason
+            return fallback_result
+        return {
+            "success": False,
+            "error": reason,
+            "message": "AI Mode extraction failed and classic web-results fallback returned no results.",
+        }
+
     def scrape(self, query: str) -> Dict[str, Any]:
         """Führt den kompletten Scraping-Prozess durch"""
         if not self.page:
             raise RuntimeError("Browser not started. Call start() first.")
 
-        url = f"https://www.google.com/search?udm=50&q={query.replace(' ', '+')}"
+        url = build_google_search_url(query, ai_mode=True)
         print(f"  🌐 Loading Query: {query[:50]}...")
         self.logger.debug(f"Navigating to: {url}")
 
@@ -541,8 +810,17 @@ class GoogleAIScraper:
                 # Der "Waiting for AI content" Loop unten wartet automatisch
                 print("⚠️  CAPTCHA DETECTED - Browser bleibt offen")
                 print("   Bitte lösen Sie das Captcha im Browser")
-                print("   Script wartet automatisch auf AI-Antwort...")
+                print("   Script wartet auf das Verschwinden der CAPTCHA-Seite...")
                 self.logger.info("CAPTCHA detected - waiting for user to solve and AI content to appear...")
+                if not self._wait_for_captcha_to_clear():
+                    dump_path = self._dump_debug_page_state("captcha_not_cleared")
+                    if dump_path:
+                        self.logger.error(f"Page dump saved to: {dump_path}")
+                    return {
+                        "success": False,
+                        "error": "CAPTCHA_NOT_CLEARED",
+                        "message": f"CAPTCHA page did not clear within {CAPTCHA_SOLVE_TIMEOUT} seconds."
+                    }
         else:
             self.logger.debug("No CAPTCHA detected, proceeding...")
 
@@ -651,6 +929,14 @@ class GoogleAIScraper:
                 '%CITATION_SELECTORS%',
                 json.dumps(CITATION_SELECTORS)
             )
+            script_with_selectors = script_with_selectors.replace(
+                '%MAIN_CONTENT_SELECTORS%',
+                json.dumps(MAIN_CONTENT_SELECTORS)
+            )
+            script_with_selectors = script_with_selectors.replace(
+                '%SIDEBAR_SELECTORS%',
+                json.dumps(SIDEBAR_SELECTORS)
+            )
             data = self.page.evaluate(script_with_selectors)
             self.logger.debug("JavaScript injection successful")
         except Exception as e:
@@ -662,11 +948,17 @@ class GoogleAIScraper:
                     "error": "BROWSER_CLOSED_BY_USER",
                     "message": "Browser wurde vom User geschlossen"
                 }
+            dump_path = self._dump_debug_page_state("js_injection_failed")
+            if dump_path:
+                self.logger.error(f"Page dump saved to: {dump_path}")
             return {"success": False, "error": f"JS Injection failed: {e}"}
 
         if 'error' in data:
             self.logger.error(f"JS script returned error: {data['error']}")
-            return {"success": False, "error": data['error']}
+            dump_path = self._dump_debug_page_state("dom_container_missing")
+            if dump_path:
+                self.logger.error(f"Page dump saved to: {dump_path}")
+            return self._build_web_results_fallback(query, data['error'])
 
         html_content = data['html']
         citations = data['citations']
@@ -758,6 +1050,8 @@ class GoogleAIScraper:
             markdown += "\n\n---\n\n## Sources:\n\n"
             for i, source in enumerate(sources, 1):
                 markdown += f"[{i}] {source.get('title', 'Link')}  \n{source.get('url')}\n\n"
+        elif len(markdown.strip()) < 120:
+            return self._build_web_results_fallback(query, "AI content too short and no sources found")
 
         self.logger.info(f"Scraping completed successfully - {len(sources)} sources, {len(markdown)} chars")
         return {

@@ -1,0 +1,62 @@
+﻿<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PriceSmart AI | Genel Bakış</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand-lockup" href="#/dashboard" aria-label="PriceSmart AI">
+        <span class="brand-mark" aria-hidden="true">PS</span>
+        <span class="brand-text">
+          <span class="brand-name">PriceSmart AI</span>
+          <span class="brand-tag">YZ ile Rekabetçi Fiyatlandırma</span>
+        </span>
+      </a>
+
+      <button class="profile-pill" type="button" aria-label="Profil">
+        <span class="profile-pill__avatar" aria-hidden="true">B</span>
+        <span class="profile-pill__label">Bora</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Sol menü">
+      <div class="sidebar-card">
+        <p class="sidebar-eyebrow">Modüller</p>
+        <nav class="sidebar-nav">
+          <button class="sidebar-item is-active" type="button" data-route="/dashboard">
+            <span>Genel Bakış</span>
+          </button>
+          <button class="sidebar-item" type="button" data-route="/yz-fiyat-onerileri">
+            <span>YZ Fiyat Önerileri</span>
+          </button>
+          <button class="sidebar-item" type="button" data-menu-disabled="1" disabled>
+            <span>Dinamik Fiyatlandırma</span>
+            <span class="sidebar-badge">Yakında</span>
+          </button>
+          <button class="sidebar-item" type="button" data-menu-disabled="1" disabled>
+            <span>A/B Fiyatlandırma Testi</span>
+            <span class="sidebar-badge">Yakında</span>
+          </button>
+        </nav>
+      </div>
+    </aside>
+
+    <main id="app" class="workspace" aria-live="polite"></main>
+  </div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+  <aside id="drawer" class="drawer hidden" aria-hidden="true"></aside>
+  <div id="intro-modal-root"></div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script defer src="./assets/js/data.js"></script>
+  <script defer src="./assets/js/app.js"></script>
+</body>
+</html>

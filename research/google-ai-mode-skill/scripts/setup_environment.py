@@ -11,6 +11,26 @@ import venv
 from pathlib import Path
 
 
+def configure_stdio():
+    """Force UTF-8 stdio so redirected Windows consoles can print status safely."""
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name, None)
+        if stream is None:
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
+
+def build_subprocess_env():
+    """Ensure child Python processes inherit UTF-8 output settings."""
+    env = os.environ.copy()
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    env.setdefault("PYTHONUTF8", "1")
+    return env
+
+
 class SkillEnvironment:
     """Manages skill-specific virtual environment"""
 
@@ -52,18 +72,20 @@ class SkillEnvironment:
             try:
                 # Upgrade pip first
                 subprocess.run(
-                    [str(self.venv_pip), "install", "--upgrade", "pip"],
+                    [str(self.venv_python), "-m", "pip", "install", "--upgrade", "pip"],
                     check=True,
                     capture_output=True,
-                    text=True
+                    text=True,
+                    env=build_subprocess_env(),
                 )
 
                 # Install requirements
                 result = subprocess.run(
-                    [str(self.venv_pip), "install", "-r", str(self.requirements_file)],
+                    [str(self.venv_python), "-m", "pip", "install", "-r", str(self.requirements_file)],
                     check=True,
                     capture_output=True,
-                    text=True
+                    text=True,
+                    env=build_subprocess_env(),
                 )
                 print("✅ Dependencies installed")
 
@@ -76,7 +98,8 @@ class SkillEnvironment:
                         [str(self.venv_python), "-m", "patchright", "install", "chrome"],
                         check=True,
                         capture_output=True,
-                        text=True
+                        text=True,
+                        env=build_subprocess_env(),
                     )
                     print("✅ Chrome installed")
                 except subprocess.CalledProcessError as e:
@@ -87,7 +110,12 @@ class SkillEnvironment:
                 return True
             except subprocess.CalledProcessError as e:
                 print(f"❌ Failed to install dependencies: {e}")
-                print(f"   Output: {e.output if hasattr(e, 'output') else 'No output'}")
+                stdout = getattr(e, "stdout", "") or getattr(e, "output", "")
+                stderr = getattr(e, "stderr", "")
+                if stdout:
+                    print(f"   Stdout: {stdout}")
+                if stderr:
+                    print(f"   Stderr: {stderr}")
                 return False
         else:
             print("⚠️ No requirements.txt found, skipping dependency installation")
@@ -129,7 +157,7 @@ class SkillEnvironment:
 
         try:
             # Run the script with venv Python
-            result = subprocess.run(cmd)
+            result = subprocess.run(cmd, env=build_subprocess_env())
             return result.returncode
         except Exception as e:
             print(f"❌ Failed to run script: {e}")
@@ -150,6 +178,8 @@ class SkillEnvironment:
 def main():
     """Main entry point for environment setup"""
     import argparse
+
+    configure_stdio()
 
     parser = argparse.ArgumentParser(
         description='Setup Google AI Mode skill environment'

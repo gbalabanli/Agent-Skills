@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design to Code Annotator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Design to Code Annotator</h1>
+    <p>Upload screens, draw regions, describe behavior, export JSON and markdown.</p>
+  </header>
+
+  <main class="layout">
+    <aside class="panel left">
+      <section>
+        <h2>Project</h2>
+        <label>Project ID <input id="projectId" value="project-ui-flow"></label>
+        <label>Project Title <input id="projectTitle" value="UI Flow Annotation"></label>
+        <label>Feature Summary <textarea id="featureSummary" rows="3">Describe the flow and expected user outcome.</textarea></label>
+      </section>
+
+      <section>
+        <h2>Screens</h2>
+        <label>Upload image screens <input id="uploadScreens" type="file" accept="image/*" multiple></label>
+        <label>Open HTML designs <input id="uploadHtmlDesigns" type="file" accept=".html,.htm,text/html" multiple></label>
+        <div id="screenList" class="screen-list"></div>
+      </section>
+
+      <section class="actions">
+        <input id="importProjectInput" type="file" accept="application/json,.json" hidden>
+        <button id="importProjectBtn" type="button">Import JSON Project</button>
+        <button id="exportJsonBtn" type="button">Export JSON</button>
+        <button id="exportMdBtn" type="button">Export Markdown</button>
+      </section>
+
+      <section>
+        <h2>Keyboard</h2>
+        <ul class="shortcut-list">
+          <li><kbd>Ctrl/Cmd + S</kbd> save annotation</li>
+          <li><kbd>Delete</kbd> remove selected annotation</li>
+          <li><kbd>Esc</kbd> clear current selection</li>
+          <li><kbd>[</kbd> / <kbd>]</kbd> previous/next screen</li>
+          <li><kbd>Arrow Up/Down</kbd> previous/next annotation</li>
+        </ul>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <div id="stage" class="stage">
+        <img id="screenImage" alt="Selected screen">
+        <iframe id="screenFrame" title="Selected HTML design" class="hidden"></iframe>
+        <div id="overlayLayer" class="overlay-layer"></div>
+        <div id="draftRect" class="draft-rect hidden"></div>
+        <div id="emptyState" class="empty">Upload at least one screenshot to begin.</div>
+      </div>
+      <p id="statusBar" class="status" data-level="info">Ready. Upload screens or import a JSON project.</p>
+      <p class="hint">Draw: click and drag on image/HTML view. Edit: click annotation to load, drag to move, use corner handle to resize.</p>
+    </section>
+
+    <aside class="panel right">
+      <h2>Annotation</h2>
+      <div class="annotation-mode-switch">
+        <label>Annotation Mode
+          <select id="annotationMode">
+            <option value="detailed" selected>Detailed</option>
+            <option value="easy">Easy</option>
+          </select>
+        </label>
+      </div>
+      <form id="annotationForm">
+        <input id="annotationId" type="hidden">
+        <div id="easyFields" class="hidden">
+          <label>Command (Title) <input id="easyCommand" required></label>
+          <label>Detail <textarea id="easyDetail" rows="4" required></textarea></label>
+        </div>
+        <div id="detailedFields">
+          <label>Label <input id="label" required></label>
+          <label>Description <textarea id="description" rows="2" required></textarea></label>
+          <label>Interaction Type
+            <select id="interactionType" required>
+              <option value="click">click</option>
+              <option value="tap">tap</option>
+              <option value="input">input</option>
+              <option value="hover">hover</option>
+              <option value="scroll">scroll</option>
+              <option value="view">view</option>
+              <option value="submit">submit</option>
+              <option value="navigate">navigate</option>
+              <option value="custom">custom</option>
+            </select>
+          </label>
+          <label>Expected Result <textarea id="expectedResult" rows="2" required></textarea></label>
+          <label>Target Screen
+            <select id="targetScreenId">
+              <option value="">None</option>
+            </select>
+          </label>
+          <label>Component Hint <input id="componentHint" required></label>
+          <label>Development Notes <textarea id="developmentNotes" rows="2" required></textarea></label>
+          <label>Priority
+            <select id="priority" required>
+              <option value="high">high</option>
+              <option value="medium" selected>medium</option>
+              <option value="low">low</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="saveBtn">Save Annotation</button>
+          <button type="button" id="deleteBtn" disabled>Delete</button>
+          <button type="button" id="clearBtn">Clear</button>
+        </div>
+      </form>
+    </aside>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

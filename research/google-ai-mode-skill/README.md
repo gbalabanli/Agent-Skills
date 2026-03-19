@@ -38,6 +38,22 @@ Most built-in web research is mediocre. This skill gives Claude Code **professio
 
 [Installation](#installation) • [Quick Start](#quick-start) • [How It Works](#how-it-works) • [MCP Alternative](#mcp-server-alternative)
 
+## Hybrid Strategy
+
+This skill combines two modes in one workflow:
+
+1. **Google AI Mode first**
+   Extract the synthesized answer and source links when the AI overview is available.
+2. **Classic Google web-results fallback**
+   If AI Mode DOM extraction fails after the page loads, the skill falls back to browser-scraping classic Google result cards and returns them with sources.
+
+The fallback follows the same practical rules as the `web-scraping` skill:
+- browser automation for dynamic pages
+- resilient selectors
+- graceful error handling
+- deduplicated result links
+- source-first output
+
 </div>
 
 ---

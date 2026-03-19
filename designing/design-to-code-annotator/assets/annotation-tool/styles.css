@@ -57,6 +57,10 @@ body {
   font-size: 17px;
 }
 
+.annotation-mode-switch {
+  margin-bottom: 8px;
+}
+
 label {
   display: block;
   font-size: 13px;
@@ -91,7 +95,7 @@ button:hover {
   gap: 8px;
 }
 
-.actions button:first-child {
+.actions button:nth-child(2) {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
@@ -101,6 +105,12 @@ button:hover {
   background: var(--accent-2);
   color: #fff;
   border-color: var(--accent-2);
+}
+
+#importProjectBtn {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
 }
 
 .workspace {
@@ -125,12 +135,21 @@ button:hover {
   overflow: hidden;
 }
 
-.stage img {
+.stage img,
+.stage iframe {
   max-width: 100%;
   max-height: 72vh;
   display: block;
   user-select: none;
   pointer-events: none;
+}
+
+.stage iframe {
+  width: min(100%, 1280px);
+  height: min(72vh, 840px);
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
 }
 
 .overlay-layer {
@@ -149,9 +168,30 @@ button:hover {
   cursor: pointer;
 }
 
+.annotation-label {
+  display: inline-block;
+  max-width: calc(100% - 14px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .annotation-box.active {
   border-color: #be123c;
   background: #fb718533;
+}
+
+.annotation-resize-handle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #082f49;
+  background: #ffffff;
+  cursor: nwse-resize;
+  padding: 0;
 }
 
 .draft-rect {
@@ -205,6 +245,54 @@ button:hover {
   margin: 10px 4px 2px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.status {
+  margin: 10px 4px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.status[data-level="success"] {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.status[data-level="warn"] {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.status[data-level="error"] {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.shortcut-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+kbd {
+  display: inline-block;
+  border: 1px solid #cbd5e1;
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: #fff;
+  padding: 0 6px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 11px;
+  color: #0f172a;
 }
 
 @media (max-width: 1100px) {

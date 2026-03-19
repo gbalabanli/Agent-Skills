@@ -207,7 +207,7 @@ Then propose targeted fixes that make the workflow more reliable for design-to-c
 ## Run Status (2026-03-07)
 
 - [x] Task 1: Create the Skill
-  - Added `coding/design-to-code-annotator/` with `SKILL.md`, `agents/openai.yaml`, references, templates, and assets.
+  - Added `designing/design-to-code-annotator/` with `SKILL.md`, `agents/openai.yaml`, references, templates, and assets.
 - [x] Task 2: Define the Annotation Format
   - Added `references/annotation-schema.md` and machine-validatable `references/annotation-schema.json`.
   - Included multi-screen linked example in `references/annotation-export-example.json`.
@@ -224,3 +224,60 @@ Then propose targeted fixes that make the workflow more reliable for design-to-c
   - Ran JS syntax check on annotation app.
   - Parsed schema and example JSON; verified required annotation fields exist.
   - Refined usage notes and output consistency across files.
+
+## Upcoming Tasks (2026-03-19)
+
+- [x] Task 7: Add Import Workflow
+  - Let users import a previously exported JSON project back into the annotation UI.
+  - Validate schema and surface readable errors for invalid files.
+  - Added import controls (`Import JSON Project`) and file handling in `assets/annotation-tool/index.html` + `app.js`.
+  - Added import validation with readable error reporting in `assets/annotation-tool/model.js` (`validateImportProject`).
+
+- [x] Task 8: Add Basic Test Coverage
+  - Add lightweight tests for JSON export structure and markdown export generation.
+  - Include one test case for linked-screen transitions.
+  - Added Node tests at `assets/annotation-tool/tests/model.test.mjs` (validation, export links, markdown flow, path normalization).
+  - Verified with: `node --test designing/design-to-code-annotator/assets/annotation-tool/tests/model.test.mjs` (5/5 pass).
+
+- [x] Task 9: Improve Annotation Editing UX
+  - Add drag-to-move and resize handles for existing annotation rectangles.
+  - Preserve overlay alignment when image display size changes.
+  - Added drag-to-move and corner resize handle support in `assets/annotation-tool/app.js` + `styles.css`.
+  - Kept normalized coordinates and resize re-render behavior for viewport/image-size alignment.
+
+- [x] Task 10: Add Keyboard Productivity Shortcuts
+  - Add shortcuts for creating, saving, deleting, and navigating annotations.
+  - Document shortcuts in the tool UI and references.
+  - Added keyboard handling in `assets/annotation-tool/app.js`: `Ctrl/Cmd+S`, `Delete/Backspace`, `Esc`, `[`, `]`, `Arrow Up/Down`.
+  - Documented shortcuts in tool sidebar (`index.html`) and `references/usage-notes.md`.
+
+- [x] Task 11: Package Demo for Fast Onboarding
+  - Add a one-command local demo flow with sample data preloaded.
+  - Update usage notes with a 2-minute quickstart path.
+  - Added one-command demo runner: `assets/annotation-tool/scripts/start-demo.py`.
+  - Added demo preload route (`?demo=1`) that fetches sample project and resolves sample image paths.
+  - Updated quickstart docs in `references/usage-notes.md`.
+
+- [x] Task 12: Install and Validate Wiki-Humanizer Skill
+  - Find the skill in `skills.sh` that checks wiki rules and humanizes writing.
+  - Install that skill in this workspace.
+  - Test the produced writing with `https://aidetector.com/`.
+  - Installed `blader/humanizer` to `C:\Users\Bora\.codex\skills\humanizer`.
+  - Validation (2026-03-19): `aidetector.com` scored an AI-style sample at `92.5% AI detected`, and a humanized rewrite at `15.75% AI detected` (`Likely human`).
+
+- [x] Task 13: Promote Verified Skill to `writing/`
+  - Only if Task 12 works well, add the validated skill under `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\writing`.
+  - Prepare it for GitHub in the `writing/` directory structure used by this repository.
+  - Added to repo path: `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\writing\humanizer`.
+
+- [x] Task 14: Add `frontend-slides` Skill Under `visualizations/`
+  - Source repository: `https://github.com/zarazhangrui/frontend-slides`.
+  - Add/import the skill into `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\visualizations`.
+  - Ensure it is ready for git in this repository.
+  - Added to repo path: `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\visualizations\frontend-slides`.
+
+- [x] Task 15: Add `ui-ux-pro-max-skill` Under `designing/`
+  - Source repository: `https://github.com/nextlevelbuilder/ui-ux-pro-max-skill`.
+  - Add/import the skill into `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\designing`.
+  - Ensure it is prepared for git in this repository.
+  - Added `ui-ux-pro-max` skill from `.claude/skills/ui-ux-pro-max` to repo path: `C:\Users\Bora\Desktop\Workspace\agents\agent-skills\designing\ui-ux-pro-max`.
